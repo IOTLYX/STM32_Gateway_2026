@@ -25,7 +25,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <errno.h>
+#include <unistd.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -163,7 +164,18 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+int _write(int file, char *ptr, int len)
+{
+  /* ????? stdout / stderr */
+  if (file == STDOUT_FILENO || file == STDERR_FILENO)
+  {
+    HAL_UART_Transmit(&huart1, (uint8_t*)ptr, (uint16_t)len, 1000);
+    return len;
+  }
 
+  errno = EBADF;
+  return -1;
+}
 /* USER CODE END 4 */
 
 /**
